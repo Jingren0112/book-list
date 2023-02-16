@@ -1,58 +1,41 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
 import './App.css';
+import { fetchBook } from './features/api/api';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { BookList } from './features/bookList/bookList';
+import { MainPage } from './features/mainPage/mainPage';
+import { useSelector } from 'react-redux';
+import { fetchBooksAsync, selectData } from './features/bookList/bookListSlice';
+import { MemoryRouter, Routes, Route, createMemoryRouter, RouterProvider, BrowserRouter, useNavigate } from 'react-router-dom';
+import { isNil } from 'lodash';
 
-function App() {
+export const App = (): JSX.Element => {
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+    dispatch(fetchBooksAsync())
+  }, [])
+  const routes = [
+    { path: '/', element: <MainPage /> },
+  ]
+  const state = useAppSelector(selectData)
+  if (!isNil(state.data)) {
+    for (let index = 0; index < state.data.length / state.itemsPerPage; index++) {
+      index == 0 ? routes.push({ path: `/bookList`, element: <BookList /> }) :
+        routes.push({ path: `/bookList?page=${index + 1}`, element: <BookList /> })
+    }
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        { routes.map((route, index) => {
+          return (
+            <Route key={ index } path={ route.path } element={ route.element } />
+          )
+        })
+        }
+      </Routes>
+    </BrowserRouter>
   );
 }
 
-export default App;
