@@ -2,12 +2,10 @@ import { Box } from "@mui/material";
 import { useAppSelector } from "../../app/hooks";
 import { selectData } from "../bookList/bookListSlice";
 import { useNavigate } from "react-router-dom";
-import { SearchAppBar } from "../appBar/appBar";
 
 export const MainPage = (): JSX.Element => {
     const navigate = useNavigate()
     const state = useAppSelector(selectData)
-
     return (
         <Box
             sx={
@@ -21,7 +19,6 @@ export const MainPage = (): JSX.Element => {
                     width: '100%',
                     height: '100%',
                 } }>
-            <SearchAppBar />
             <h1>Check out the books we offer</h1>
             { state.status === 'loading' ?
                 <p>loading...</p> :

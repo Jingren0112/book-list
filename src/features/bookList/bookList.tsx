@@ -4,9 +4,8 @@ import {
 } from './bookListSlice';
 import { isNil } from 'lodash';
 import { BookListItem } from '../bookListItem/bookListItem';
-import { Box, Divider, List, Pagination, PaginationItem, Typography } from '@mui/material';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { SearchAppBar } from '../appBar/appBar';
+import { Box, Divider, List, Pagination, Typography } from '@mui/material';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface IBookListProps {
     currentPage?: number;

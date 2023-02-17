@@ -12,7 +12,7 @@ export interface IBookListState {
     search: string,
 }
 
-const initialState: IBookListState = {
+export const initialState: IBookListState = {
     data: null,
     status: loadingStatus.loading,
     currentPage: 1,
