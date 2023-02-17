@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { useAppSelector } from '../../app/hooks';
 import {
-    fetchBooksAsync, selectData,
+    selectData,
 } from './bookListSlice';
-import styles from './Counter.module.css';
 import { isNil } from 'lodash';
-import { IBook } from '../../app/types';
 import { BookListItem } from '../bookListItem/bookListItem';
-import { Pagination, PaginationItem } from '@mui/material';
-import { Link, redirect, useLocation } from 'react-router-dom';
-import { setCurrentPage } from './bookListSlice';
+import { Box, Divider, List, Pagination, Typography } from '@mui/material';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface IBookListProps {
     currentPage?: number;
@@ -17,47 +13,63 @@ interface IBookListProps {
 
 export const BookList = (props: IBookListProps): JSX.Element => {
     const state = useAppSelector(selectData);
+    const navigate = useNavigate();
+    // get current page from url
     const location = useLocation();
     const query = new URLSearchParams(location.search);
     const page = parseInt(query.get('page') || '1', 10);
-    console.log('page', page)
+
+    // if current page is provided, it will be used instead of the one from url
     const currentPage = props.currentPage ?? page;
-    console.log('currentPage', currentPage)
+
+    // get data length for current page
     const start = (currentPage - 1) * state.itemsPerPage;
     const end = start + state.itemsPerPage;
     const currentData = !isNil(state.data) ? state.data?.slice(start, end) : null;
-    console.log('start', start, 'end', end, 'currentData', currentData)
-    const dispatch = useAppDispatch();
     return (
-        <>
-            <div>
-                <h1>this is the home page</h1>
-                <p>current page is </p>{ page }
-                <div>
+        <Box sx={
+            {
+                display: 'flex',
+                flexDirection: 'column',
+                maxWidth: '80%',
+                margin: 'auto',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%',
+                height: '100%',
+            }
+        }>
+            <Typography component="div" sx={
+                {
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    height: '100%',
+                }
+            }>
+                <h1>GG Test: Book List</h1>
+
+                <button onClick={ () => {
+                    navigate('/dataGrid')
+                } }> Click here for data grid access!</button>
+                <List sx={ { width: '100%', bgcolor: 'background.paper' } }>
+                    <Divider component="li" />
                     { !isNil(currentData) ? currentData.map((book, index) => {
                         return (
-                            <div key={ index }>
-                                <BookListItem book={ book } />
-                            </div>
+                            <BookListItem book={ book } key={ index } />
                         )
                     }) : <></> }
-                </div >
-            </div>
+                </List >
+            </Typography>
             <Pagination
                 page={ page }
                 count={ !isNil(state.data) ? state.data?.length / state.itemsPerPage! : 0 }
-                renderItem={ (item) => (
-                    <PaginationItem
-                        component={ Link }
-                        to={ `${item.page === 0 ? '' : `/bookList?page=${item.page}`}` }
-                        { ...item }
-                    />
-                ) }
-                onChange={ (e, newPage) => {
-                    redirect(`/bookList?page='${newPage}'`)
-                    dispatch(setCurrentPage(newPage))
+                onChange={ (event, value) => {
+                    window.location.href = `/bookList?page=${value}`;
                 } }
             />
-        </>);
+        </Box>);
 }
 

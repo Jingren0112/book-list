@@ -1,4 +1,4 @@
-import axios from 'axios'
-import { booksEndPoint, param, url } from './type'
+import axio from 'axios'
+import { booksEndPoint, url } from './type'
 
-export const fetchBook = () => axios.post(url + booksEndPoint + param)
+export const fetchBook = () => axio.post(url + booksEndPoint)
