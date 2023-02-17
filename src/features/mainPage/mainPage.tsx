@@ -1,26 +1,38 @@
-import { Pagination } from "@mui/material";
-import PaginationItem from '@mui/material/PaginationItem';
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { setCurrentPage, fetchBooksAsync, selectData } from "../bookList/bookListSlice";
-import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
-import { isNil } from "lodash";
-import { BookList } from "../bookList/bookList";
+import { Box } from "@mui/material";
+import { useAppSelector } from "../../app/hooks";
+import { selectData } from "../bookList/bookListSlice";
+import { useNavigate } from "react-router-dom";
+import { SearchAppBar } from "../appBar/appBar";
 
 export const MainPage = (): JSX.Element => {
     const navigate = useNavigate()
     const state = useAppSelector(selectData)
 
     return (
-        <>
-            <div>
-                <h1>this is the home page</h1>
-                { state.status === 'loading' ? <p>loading...</p> : <button onClick={ () => {
-                    console.log('redirect')
+        <Box
+            sx={
+                {
+                    display: 'flex',
+                    flexDirection: 'column',
+                    maxWidth: '80%',
+                    margin: 'auto',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    height: '100%',
+                } }>
+            <SearchAppBar />
+            <h1>Check out the books we offer</h1>
+            { state.status === 'loading' ?
+                <p>loading...</p> :
+                <div><button onClick={ () => {
                     navigate('/bookList?page=1')
-                } }> access!</button> }
+                } }> Click here for list access!</button>
+                    <button onClick={ () => {
+                        navigate('/dataGrid')
+                    } }> Click here for data grid access!</button></div>
+            }
 
-            </div>
-        </>
+        </Box>
     )
 };
